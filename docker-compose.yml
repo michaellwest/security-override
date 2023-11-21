@@ -1,0 +1,163 @@
+version: "3.9"
+
+services:
+  traefik:
+    isolation: ${TRAEFIK_ISOLATION}
+    image: ${TRAEFIK_IMAGE}
+    command:
+      - "--ping"
+      - "--api.insecure=true"
+      - "--providers.docker.endpoint=npipe:////./pipe/docker_engine"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.file.directory=C:/etc/traefik/config/dynamic"
+      - "--entryPoints.websecure.address=:443"
+      - "--entryPoints.websecure.forwardedHeaders.insecure"
+    ports:
+      - "443:443"
+      - "8079:8080"
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+    volumes:
+      - source: \\.\pipe\docker_engine\
+        target: \\.\pipe\docker_engine\
+        type: npipe
+      - ./docker/traefik:C:/etc/traefik
+    depends_on:
+      id:
+        condition: service_healthy
+      cm:
+        condition: service_healthy
+  mssql:
+    isolation: ${ISOLATION}
+    image: ${SITECORE_DOCKER_REGISTRY}nonproduction/mssql-developer:${MSSQL_VERSION}
+    environment:
+      SA_PASSWORD: ${SQL_SA_PASSWORD}
+      ACCEPT_EULA: "Y"
+    ports:
+      - "14330:1433"
+    volumes:
+      - ${LOCAL_DATA_PATH}\mssql:c:\data
+      - ${LOCAL_RELEASE_PATH}:C:\releases:ro
+  mssql-init:
+    isolation: ${ISOLATION}
+    image: ${SITECORE_DOCKER_REGISTRY}sitecore-xm1-mssql-init:${SITECORE_VERSION}
+    environment:
+      SQL_SERVER: ${SQL_SERVER}
+      SQL_ADMIN_LOGIN: ${SQL_SA_LOGIN}
+      SQL_ADMIN_PASSWORD: ${SQL_SA_PASSWORD}
+      SQL_DATABASE_PREFIX: ${SQL_DATABASE_PREFIX}
+      SITECORE_ADMIN_PASSWORD: ${SITECORE_ADMIN_PASSWORD}
+      POST_DEPLOYMENT_WAIT_PERIOD: 300
+    healthcheck:
+      test: ["CMD", "powershell", "-command", "if ([System.Environment]::GetEnvironmentVariable('DatabasesDeploymentStatus', 'Machine') -eq 'Complete') { exit 0 } else { exit 1}"]
+      start_period: 300s
+      interval: 5s
+    depends_on:
+      mssql:
+        condition: service_healthy
+  solr:
+    isolation: ${ISOLATION}
+    image: ${SITECORE_DOCKER_REGISTRY}nonproduction/solr:${SOLR_VERSION}
+    ports:
+      - "8984:8983"
+    volumes:
+      - ${LOCAL_DATA_PATH}\solr:c:\data
+    environment:
+      SOLR_MODE: solrcloud
+    healthcheck:
+      test: ["CMD", "powershell", "-command", "try { $$statusCode = (iwr http://solr:8983/solr/admin/cores?action=STATUS -UseBasicParsing).StatusCode; if ($$statusCode -eq 200) { exit 0 } else { exit 1} } catch { exit 1 }"]
+  solr-init:
+    isolation: ${ISOLATION}
+    image: ${SITECORE_DOCKER_REGISTRY}sitecore-xm1-solr-init:${SITECORE_VERSION}
+    environment:
+      SITECORE_SOLR_CONNECTION_STRING: http://solr:8983/solr
+      SOLR_CORE_PREFIX_NAME: ${SOLR_CORE_PREFIX_NAME}
+    depends_on:
+      solr:
+        condition: service_healthy
+  id:
+    isolation: ${ISOLATION}
+    image: ${SITECORE_DOCKER_REGISTRY}sitecore-id${ID_VERSION}:${SITECORE_VERSION}
+    environment:
+      SITECORE_SITECORE__IDENTITYSERVER__SITECOREMEMBERSHIPOPTIONS__CONNECTIONSTRING: Data Source=${SQL_SERVER};Initial Catalog=Sitecore.Core;User ID=${SQL_SA_LOGIN};Password=${SQL_SA_PASSWORD}
+      SITECORE_SITECORE__IDENTITYSERVER__ACCOUNTOPTIONS__PASSWORDRECOVERYURL: https://${CM_HOST}/sitecore/login?rc=1
+      SITECORE_SITECORE__IDENTITYSERVER__CLIENTS__PASSWORDCLIENT__CLIENTSECRETS__CLIENTSECRET1: ${SITECORE_IDSECRET}
+      SITECORE_SITECORE__IDENTITYSERVER__CLIENTS__DEFAULTCLIENT__ALLOWEDCORSORIGINS__ALLOWEDCORSORIGINSGROUP1: https://${CM_HOST}
+      SITECORE_SITECORE__IDENTITYSERVER__CERTIFICATERAWDATA: ${SITECORE_ID_CERTIFICATE}
+      SITECORE_SITECORE__IDENTITYSERVER__PUBLICORIGIN: https://${ID_HOST}
+      SITECORE_SITECORE__IDENTITYSERVER__CERTIFICATERAWDATAPASSWORD: ${SITECORE_ID_CERTIFICATE_PASSWORD}
+    volumes:
+      - ${SITECORE_LICENSE_PATH}:C:/Identity/sitecoreruntime:ro
+    healthcheck:
+      test: ["CMD", "pwsh", "-command", "C:/Healthchecks/Healthcheck.ps1"]
+      timeout: 300s
+    depends_on:
+      mssql-init:
+        condition: service_healthy
+    networks:
+      default:
+        aliases:
+          - ${ID_HOST}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.id-secure.entrypoints=websecure"
+      - "traefik.http.routers.id-secure.rule=Host(`${ID_HOST}`)"
+      - "traefik.http.routers.id-secure.tls=true"
+  cm:
+    isolation: ${ISOLATION}
+    image: ${SITECORE_DOCKER_REGISTRY}sitecore-xm1-cm:${SITECORE_VERSION}
+    depends_on:
+      mssql-init:
+        condition: service_healthy
+      solr-init:
+        condition: service_started
+      id:
+        condition: service_started
+    environment:
+      SITECORE_APPSETTINGS_INSTANCENAMEMODE:DEFINE: default
+      SITECORE_CONNECTIONSTRINGS_CORE: Data Source=${SQL_SERVER};Initial Catalog=Sitecore.Core;User ID=${SQL_SA_LOGIN};Password=${SQL_SA_PASSWORD}
+      SITECORE_CONNECTIONSTRINGS_SECURITY: Data Source=${SQL_SERVER};Initial Catalog=Sitecore.Core;User ID=${SQL_SA_LOGIN};Password=${SQL_SA_PASSWORD}
+      SITECORE_CONNECTIONSTRINGS_MASTER: Data Source=${SQL_SERVER};Initial Catalog=Sitecore.Master;User ID=${SQL_SA_LOGIN};Password=${SQL_SA_PASSWORD}
+      SITECORE_CONNECTIONSTRINGS_WEB: Data Source=${SQL_SERVER};Initial Catalog=Sitecore.Web;User ID=${SQL_SA_LOGIN};Password=${SQL_SA_PASSWORD}
+      SITECORE_CONNECTIONSTRINGS_EXPERIENCEFORMS: Data Source=${SQL_SERVER};Initial Catalog=Sitecore.ExperienceForms;User ID=${SQL_SA_LOGIN};Password=${SQL_SA_PASSWORD}
+      SITECORE_CONNECTIONSTRINGS_SOLR.SEARCH: http://solr:8983/solr;solrCloud=true
+      SITECORE_CONNECTIONSTRINGS_SITECOREIDENTITY.SECRET: ${SITECORE_IDSECRET}
+      SITECORE_APPSETTINGS_TELERIK.ASYNCUPLOAD.CONFIGURATIONENCRYPTIONKEY: ${TELERIK_ENCRYPTION_KEY}
+      SITECORE_APPSETTINGS_TELERIK.UPLOAD.CONFIGURATIONHASHKEY: ${TELERIK_ENCRYPTION_KEY}
+      SITECORE_APPSETTINGS_TELERIK.WEB.UI.DIALOGPARAMETERSENCRYPTIONKEY: ${TELERIK_ENCRYPTION_KEY}
+      SITECORE_LICENSE_LOCATION: ${SITECORE_LICENSE_LOCATION}
+      SITECORE_IDENTITY_SERVER_AUTHORITY: https://${ID_HOST}
+      SITECORE_IDENTITY_SERVER_INTERNALAUTHORITY: http://id
+      SITECORE_IDENTITY_SERVER_CALLBACKAUTHORITY: https://${CM_HOST}
+      SITECORE_IDENTITY_SERVER_REQUIRE_HTTPS: "false"
+      SOLR_CORE_PREFIX_NAME: ${SOLR_CORE_PREFIX_NAME}
+      MEDIA_REQUEST_PROTECTION_SHARED_SECRET: ${MEDIA_REQUEST_PROTECTION_SHARED_SECRET}
+    volumes:
+      - ${SITECORE_LICENSE_PATH}:${SITECORE_LICENSE_PATH}:ro
+      - ${LOCAL_DEPLOY_PATH}\:C:\deploy
+      - ${LOCAL_DATA_PATH}\cm:C:\inetpub\wwwroot\App_Data\logs
+      - ${LOCAL_RELEASE_PATH}:C:\releases:ro
+    healthcheck:
+      test: ["CMD", "powershell", "-command", "C:/Healthchecks/Healthcheck.ps1"]
+      timeout: 300s
+    networks:
+      default:
+        aliases:
+          - ${CM_HOST}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.force-STS-Header.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.force-STS-Header.headers.stsSeconds=31536000"
+      - "traefik.http.routers.cm-secure.entrypoints=websecure"
+      - "traefik.http.routers.cm-secure.rule=Host(`${CM_HOST}`)"
+      - "traefik.http.routers.cm-secure.tls=true"
+      - "traefik.http.routers.cm-secure.middlewares=force-STS-Header"
+  whw:
+    image: ${WHW_IMAGE}
+    volumes: 
+      - C:\windows\system32\drivers\etc:C:\driversetc
+      - source: \\.\pipe\docker_engine\
+        target: \\.\pipe\docker_engine\
+        type: npipe
+    environment:
+      TERMINATION_MAP: id,cm,solr:traefik

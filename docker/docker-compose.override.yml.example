@@ -1,0 +1,7 @@
+services:
+  cm:
+    entrypoint: powershell -Command "& C:/tools/entrypoints/iis/Development.ps1"
+    environment:
+      SITECORE_DEVELOPMENT_PATCHES: CustomErrorsOff,DebugOn,DevEnvOn,DeviceDetectionOff,HttpErrorsDetailed,InitMessagesOff
+    volumes:
+      - .\docker\tools:C:\tools:ro
