@@ -106,11 +106,6 @@
     <Reference Include="System.Xml.ReaderWriter" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>..\src\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -161,7 +156,6 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\src\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\src\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('packages\Sitecore.Assemblies.Platform.10.3.1\build\Sitecore.Assemblies.Platform.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Sitecore.Assemblies.Platform.10.3.1\build\Sitecore.Assemblies.Platform.targets'))" />
   </Target>
   <Import Project="packages\Sitecore.Assemblies.Platform.10.3.1\build\Sitecore.Assemblies.Platform.targets" Condition="Exists('packages\Sitecore.Assemblies.Platform.10.3.1\build\Sitecore.Assemblies.Platform.targets')" />

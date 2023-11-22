@@ -1,0 +1,24 @@
+{
+    "namespace": "So",
+    "description": "Module content",
+    "tags": [
+        "content"
+    ],
+    "items": {
+        "includes": [
+            {
+                "name": "Templates",
+                "path": "/sitecore/templates/Modules/Security Override"
+            },
+            {
+                "name": "Rules",
+                "path": "/sitecore/system/Settings/Rules/Security Override"
+            },
+            {
+                "name": "Modules",
+                "path": "/sitecore/system/Modules/Security Override",
+                "scope": "SingleItem"
+            }
+        ]
+    }
+}
