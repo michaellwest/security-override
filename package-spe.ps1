@@ -6,7 +6,7 @@ Get-Item -Path "master:{FE669C6E-5CE5-4A7D-B4D3-5039B4C6AE75}" | Invoke-Script
 $currentYear = [datetime]::Today.ToString("yyyy")
 
 # Build Standard Package
-$package = New-Package "Sitecore Security Access Overrides"
+$package = New-Package "Sitecore Item Access Override"
 $package.Sources.Clear();
 
 $package.Metadata.Author = "Michael West"
@@ -42,13 +42,13 @@ Export-Package -Project $package -Path "$packageName-IAR.zip" -Zip
 # Package with items
 $package.Sources.Remove($iarSource) > $null
 
-$source = Get-Item 'master:\templates\Modules\Security Override\*' | New-ExplicitItemSource -Name 'Templates' -InstallMode Overwrite
+$source = Get-Item 'master:\templates\Modules\Item Access Override\*' | New-ExplicitItemSource -Name 'Templates' -InstallMode Overwrite
 $package.Sources.Add($source)
 
-$source = Get-Item 'master:\system\Settings\Rules\Security Override\*' | New-ExplicitItemSource -Name 'Rules' -InstallMode Overwrite
+$source = Get-Item 'master:\system\Settings\Rules\Item Access Override\*' | New-ExplicitItemSource -Name 'Rules' -InstallMode Overwrite
 $package.Sources.Add($source)
 
-$source = Get-Item 'master:\system\Modules\Security Override' | New-ExplicitItemSource -Name 'Modules' -InstallMode Merge
+$source = Get-Item 'master:\system\Modules\Access Overrides' | New-ExplicitItemSource -Name 'Modules' -InstallMode Merge
 $package.Sources.Add($source)
 
 Export-Package -Project $package -Path "$packageName.xml"

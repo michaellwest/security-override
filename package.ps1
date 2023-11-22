@@ -29,7 +29,7 @@ Stop-ScriptSession -Session $session
 Write-Host "Swap out IAR files"
 
 Add-Type -AssemblyName "System.IO.Compression.FileSystem"
-$file = Get-ChildItem -Path $releases -Filter "Sitecore.Security.Access.Overrides-*-IAR.zip" | Select-Object -ExpandProperty FullName
+$file = Get-ChildItem -Path $releases -Filter "Sitecore.Item.Access.Override-*-IAR.zip" | Select-Object -ExpandProperty FullName
 $zip = [System.IO.Compression.ZipFile]::Open($file, [System.IO.Compression.ZipArchiveMode]::Update)
 $packageZipEntry = $zip.Entries | Where-Object { $_.Name -eq "package.zip" }
 

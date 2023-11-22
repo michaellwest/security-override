@@ -1,0 +1,22 @@
+﻿---
+ID: "147ab775-3e64-4ecc-8d61-15ce7ea1f160"
+Parent: "32759dec-99fe-4544-b062-74a823b6ac1f"
+Template: "854ba861-63ea-4a0c-8c7b-541e9a7ec4c1"
+Path: /sitecore/system/Settings/Rules/Item Access Override/Tags/Default
+SharedFields:
+- ID: "42f77151-098f-496a-94cf-590b7edeeabe"
+  Hint: Tags
+  Value: |
+    {D8933FCB-48F3-468E-8FB6-8F2B5CFAF404}
+    {09340671-13CF-4181-A706-BE150B00D735}
+- ID: "f6d8a61c-2f84-4401-bd24-52d2068172bc"
+  Hint: __Originator
+  Value: "{38069D83-16E5-4533-998A-E9E9E13B508D}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "08a696bd-8e54-4905-bc53-cc42a26db09b"

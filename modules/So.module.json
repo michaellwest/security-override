@@ -8,15 +8,15 @@
         "includes": [
             {
                 "name": "Templates",
-                "path": "/sitecore/templates/Modules/Security Override"
+                "path": "/sitecore/templates/Modules/Item Access Override"
             },
             {
                 "name": "Rules",
-                "path": "/sitecore/system/Settings/Rules/Security Override"
+                "path": "/sitecore/system/Settings/Rules/Item Access Override"
             },
             {
                 "name": "Modules",
-                "path": "/sitecore/system/Modules/Security Override",
+                "path": "/sitecore/system/Modules/Access Overrides",
                 "scope": "SingleItem"
             }
         ]

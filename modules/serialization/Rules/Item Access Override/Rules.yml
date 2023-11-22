@@ -1,0 +1,17 @@
+﻿---
+ID: "a8353236-f600-4881-87bd-02a6b5901376"
+Parent: "e71a927e-f3b8-4050-b7f5-9b74f4121fe4"
+Template: "8ea2cf67-4250-47a2-aeca-4f70fd200dc7"
+Path: /sitecore/system/Settings/Rules/Item Access Override/Rules
+SharedFields:
+- ID: "f6d8a61c-2f84-4401-bd24-52d2068172bc"
+  Hint: __Originator
+  Value: "{9AD7A893-37D9-4726-8FA4-E23B3F9DB826}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "72961f19-e6f9-444c-b19b-507b58f9f99b"

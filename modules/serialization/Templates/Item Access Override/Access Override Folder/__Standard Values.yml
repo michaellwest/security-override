@@ -1,0 +1,31 @@
+﻿---
+ID: "0c27ca15-62a1-402f-aec1-fc73321fa0e8"
+Parent: "1843e27b-4e4d-4ac3-b942-1a0d7229a4fd"
+Template: "1843e27b-4e4d-4ac3-b942-1a0d7229a4fd"
+Path: /sitecore/templates/Modules/Item Access Override/Access Override Folder/__Standard Values
+SharedFields:
+- ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
+  Hint: __Masters
+  Value: "{6E2BD501-9144-4C08-A1A2-0184319DF4E9}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20231121T175220Z
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\Admin
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "b6c503e4-8dde-45e5-a03e-0aa2f5ee5275"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\Admin
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20231121T195754Z

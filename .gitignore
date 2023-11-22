@@ -2,9 +2,9 @@
 *.zip
 
 \.env
+\.scindex
 \.sitecore/user.json
 \.sitecore/package-cache
 \.vscode
-modules/serialization
 docker-compose.override.yml
 _out/
