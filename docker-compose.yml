@@ -136,7 +136,7 @@ services:
       - ${SITECORE_LICENSE_PATH}:${SITECORE_LICENSE_PATH}:ro
       - ${LOCAL_DEPLOY_PATH}\:C:\deploy
       - ${LOCAL_DATA_PATH}\cm:C:\inetpub\wwwroot\App_Data\logs
-      - ${LOCAL_RELEASE_PATH}:C:\releases:ro
+      - ${LOCAL_RELEASE_PATH}:C:\inetpub\wwwroot\App_Data\packages
     healthcheck:
       test: ["CMD", "powershell", "-command", "C:/Healthchecks/Healthcheck.ps1"]
       timeout: 300s

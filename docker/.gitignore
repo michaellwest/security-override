@@ -22,6 +22,9 @@
 /build/releases/**/*
 !/build/releases/**/.gitkeep
 
+/releases/**/*
+!/releases/**/.gitkeep
+
 /traefik/certs/*
 !/traefik/certs/.gitkeep
 

@@ -106,6 +106,8 @@
     <Reference Include="System.Xml.ReaderWriter" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="sitecore modules\items\master\items.master.so.dat.tmp" />
+    <Content Include="sitecore modules\items\web\items.web.so.dat.tmp" />
     <None Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
