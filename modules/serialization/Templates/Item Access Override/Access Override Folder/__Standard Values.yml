@@ -6,7 +6,9 @@ Path: /sitecore/templates/Modules/Item Access Override/Access Override Folder/__
 SharedFields:
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
   Hint: __Masters
-  Value: "{6E2BD501-9144-4C08-A1A2-0184319DF4E9}"
+  Value: |
+    {6E2BD501-9144-4C08-A1A2-0184319DF4E9}
+    {1843E27B-4E4D-4AC3-B942-1A0D7229A4FD}
 Languages:
 - Language: en
   Versions:
@@ -21,11 +23,11 @@ Languages:
         sitecore\Admin
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "b6c503e4-8dde-45e5-a03e-0aa2f5ee5275"
+      Value: "ca097e43-3290-4dcf-927b-fcfe1d3e8953"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\Admin
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20231121T195754Z
+      Value: 20231122T235612Z
