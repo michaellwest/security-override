@@ -1,4 +1,4 @@
-# Security Item Access Override Module
+# Sitecore Item Access Override Module
 
 This module provides a mechanism for overriding access typically assigned directly to items in the content tree. Through a configuration item you can now replace the effective access applied to items. The rules engine is leaveraged to evaluate when the access should be applied.
 
