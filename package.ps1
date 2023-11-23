@@ -1,5 +1,7 @@
 Clear-Host
 
+$partialModuleName = "Sitecore.Item.Access.Override-*"
+
 [System.IO.Directory]::SetCurrentDirectory($PSScriptRoot)
 $releases = Join-Path -Path $PSScriptRoot -ChildPath "docker/releases"
 
@@ -11,6 +13,9 @@ dotnet sitecore ser pull
 dotnet sitecore itemres create -o _out/so --overwrite
 
 Copy-Item -Path "_out/items.master.so.dat" -Destination "_out/items.web.so.dat"
+
+Write-Host "Remove old packages from $releases"
+Get-ChildItem -Path $releases -Filter $partialModuleName | Remove-Item
 
 Write-Host "Generate packages from running Sitecore instance."
 
@@ -29,7 +34,7 @@ Stop-ScriptSession -Session $session
 Write-Host "Swap out IAR files"
 
 Add-Type -AssemblyName "System.IO.Compression.FileSystem"
-$file = Get-ChildItem -Path $releases -Filter "Sitecore.Item.Access.Override-*-IAR.zip" | Select-Object -ExpandProperty FullName
+$file = Get-ChildItem -Path $releases -Filter "$($partialModuleName)-IAR.zip" | Select-Object -ExpandProperty FullName
 $zip = [System.IO.Compression.ZipFile]::Open($file, [System.IO.Compression.ZipArchiveMode]::Update)
 $packageZipEntry = $zip.Entries | Where-Object { $_.Name -eq "package.zip" }
 
@@ -60,3 +65,18 @@ $stream.Close()
 $stream.Dispose()
 
 $zip.Dispose()
+
+Write-Host ""
+$packages = Get-ChildItem -Path $releases -Filter "$($partialModuleName).*.zip" | Select-Object -ExpandProperty FullName
+
+Write-Host "## File Hashes"
+foreach($package in $packages) {
+
+    Write-Host "### $([System.IO.Path]::GetFileNameWithoutExtension($package))"
+    $hash = Get-FileHash -Path $package -Algorithm SHA256
+    Write-Host "SHA256 for $([System.IO.Path]::GetFileName($package))"
+    Write-Host "$($hash.Hash)"
+    Write-Host ""
+
+    Write-Host ""
+}
