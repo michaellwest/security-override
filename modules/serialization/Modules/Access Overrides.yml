@@ -1,7 +1,7 @@
 ﻿---
 ID: "3be64a09-73f5-4944-add6-8857e9c01f20"
 Parent: "08477468-d438-43d4-9d6a-6d84a611971c"
-Template: "1843e27b-4e4d-4ac3-b942-1a0d7229a4fd"
+Template: "83d60d88-b089-494c-b00b-1974894ab939"
 Path: /sitecore/system/Modules/Access Overrides
 Languages:
 - Language: en
@@ -17,11 +17,11 @@ Languages:
         sitecore\Admin
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "bd2996cc-05fd-4307-895f-fd8309ce969b"
+      Value: "197b588c-1c62-4554-ac14-93762854b730"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\Admin
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20231122T232126Z
+      Value: 20231123T001416Z

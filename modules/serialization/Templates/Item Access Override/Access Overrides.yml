@@ -1,15 +1,18 @@
 ﻿---
-ID: "1843e27b-4e4d-4ac3-b942-1a0d7229a4fd"
+ID: "83d60d88-b089-494c-b00b-1974894ab939"
 Parent: "87e69e29-ba19-473f-9197-e8394b584054"
 Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
-Path: /sitecore/templates/Modules/Item Access Override/Access Override Folder
+Path: /sitecore/templates/Modules/Item Access Override/Access Overrides
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
   Hint: __Icon
-  Value: Office/32x32/folder_open.png
+  Value: Office/32x32/lock.png
+- ID: "12c33f3f-86c5-43a5-aeb4-5598cec45116"
+  Hint: __Base template
+  Value: "{1930BBEB-7805-471A-A3BE-4858AC7CF696}"
 - ID: "f7d48a55-2158-4f02-9356-756654404f73"
   Hint: __Standard values
-  Value: "{0C27CA15-62A1-402F-AEC1-FC73321FA0E8}"
+  Value: "{FB98C492-61A9-4106-B666-A48C6C3782A5}"
 Languages:
 - Language: en
   Versions:
@@ -17,18 +20,22 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20231121T175219Z
+      Value: 20231123T001046Z
+    - ID: "52807595-0f8f-4b20-8d2a-cb71d28c6103"
+      Hint: __Owner
+      Value: |
+        sitecore\Admin
     - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
       Hint: __Created by
       Value: |
         sitecore\Admin
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "5097efe2-7e88-42ab-85db-49f18b51cb41"
+      Value: "1a6d2ce8-80e5-419c-9440-81f9246230f9"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\Admin
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20231123T002000Z
+      Value: 20231123T001340Z
