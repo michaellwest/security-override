@@ -21,15 +21,18 @@ namespace So
 
         private static readonly List<Item> _securityRuleItems = new List<Item>();
 
+        private static bool _isInitialized = false;
+
         public static void Invalidate()
         {
             _cachedSecurityRuleEntries.Clear();
             _securityRuleItems.Clear();
+            _isInitialized = false;
         }
 
         private static IEnumerable<Item> GetSecurityRuleItems()
         {
-            if (_securityRuleItems.Any())
+            if (_isInitialized)
             {
                 return _securityRuleItems;
             }
@@ -49,6 +52,7 @@ namespace So
                 _securityRuleItems.AddRange(securityRuleItems);
             }
 
+            _isInitialized = true;
             return _securityRuleItems;
         }
 

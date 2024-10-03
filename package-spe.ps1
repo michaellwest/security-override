@@ -11,7 +11,7 @@ $package.Sources.Clear();
 
 $package.Metadata.Author = "Michael West"
 $package.Metadata.Publisher = "Michael West"
-$Version = "1.0"
+$Version = "1.1"
 $package.Metadata.Version = $Version
 
 $readMeBuilder = New-Object System.Text.StringBuilder

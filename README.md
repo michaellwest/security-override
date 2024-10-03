@@ -4,8 +4,17 @@ This module provides a mechanism for overriding access typically assigned direct
 
 ![image](https://github.com/michaellwest/security-override/assets/933163/fc7d9e85-eba5-4ffa-ad60-39ec6acdd399)
 
+dotnet sitecore login --cm https://so-cm.dev.local --allow-write true --auth https://so-id.dev.local
+
 ## Contributing
 
 * Run `init.ps1`
 * Run `up.ps1`
 * Run `package.ps1`
+* Run `down.ps1`
+
+**Note:** If for some reason docker doesn't end cleanly, such as through a reboot, you may need to run this:
+
+```
+docker network rm so_default
+```
