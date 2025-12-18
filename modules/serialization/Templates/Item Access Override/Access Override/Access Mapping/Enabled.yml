@@ -4,6 +4,9 @@ Parent: "9c69106c-bcad-415d-a4e7-bef8b5f724d3"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
 Path: /sitecore/templates/Modules/Item Access Override/Access Override/Access Mapping/Enabled
 SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: Office/32x32/sausage.png
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
   Hint: Type
   Value: Checkbox
@@ -31,11 +34,11 @@ Languages:
         sitecore\Admin
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "a1ca8e4b-0407-4742-9f2c-95bf287f0a8f"
+      Value: "f22ddcad-e53a-4264-9577-694f476ea534"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\Admin
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20231121T175317Z
+      Value: 20251218T172534Z

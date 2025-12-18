@@ -87,7 +87,7 @@ services:
         condition: service_healthy
   id:
     isolation: ${ISOLATION}
-    image: ${SITECORE_DOCKER_REGISTRY}sitecore-id${ID_VERSION}:${SITECORE_VERSION}
+    image: ${SITECORE_DOCKER_REGISTRY}sitecore-id7:${ID_VERSION}
     environment:
       SITECORE_SITECORE__IDENTITYSERVER__SITECOREMEMBERSHIPOPTIONS__CONNECTIONSTRING: Data Source=${SQL_SERVER};Initial Catalog=Sitecore.Core;User ID=${SQL_SA_LOGIN};Password=${SQL_SA_PASSWORD}
       SITECORE_SITECORE__IDENTITYSERVER__ACCOUNTOPTIONS__PASSWORDRECOVERYURL: https://${CM_HOST}/sitecore/login?rc=1

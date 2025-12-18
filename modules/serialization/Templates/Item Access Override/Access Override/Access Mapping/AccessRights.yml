@@ -4,6 +4,9 @@ Parent: "9c69106c-bcad-415d-a4e7-bef8b5f724d3"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
 Path: /sitecore/templates/Modules/Item Access Override/Access Override/Access Mapping/AccessRights
 SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: Office/32x32/checkbox_group.png
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
   Hint: Type
   Value: Security
@@ -37,11 +40,11 @@ Languages:
         sitecore\Admin
     - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
       Hint: __Revision
-      Value: "f0cc7853-ba24-4308-be3f-468469fdf6d4"
+      Value: "1d554575-c950-4cd1-aacd-608d90cf7683"
     - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
       Hint: __Updated by
       Value: |
         sitecore\Admin
     - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
       Hint: __Updated
-      Value: 20231121T175317Z
+      Value: 20251218T173005Z

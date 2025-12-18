@@ -1,6 +1,11 @@
 Import-Function -Name New-PackagePostStep
 Import-Function -Name Compress-Archive
 
+# Establish version number
+$library = Get-Item -Path "$AppPath\bin\So.dll"
+$fileVersion = New-Object System.Version($library.VersionInfo.FileVersion)
+$Version = "$($fileVersion.Major).$($fileVersion.Minor)"
+
 # Setup Chrome
 Get-Item -Path "master:{FE669C6E-5CE5-4A7D-B4D3-5039B4C6AE75}" | Invoke-Script
 $currentYear = [datetime]::Today.ToString("yyyy")
@@ -11,7 +16,6 @@ $package.Sources.Clear();
 
 $package.Metadata.Author = "Michael West"
 $package.Metadata.Publisher = "Michael West"
-$Version = "1.1"
 $package.Metadata.Version = $Version
 
 $readMeBuilder = New-Object System.Text.StringBuilder

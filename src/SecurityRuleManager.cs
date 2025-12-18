@@ -73,6 +73,8 @@ namespace So
                 return entry;
             }
 
+            Log.Info($"Evaluating SecurityRule {securityRuleItem.ID} for item {currentItem.ID}", nameof(SecurityRuleManager));
+
             var ruleContext = new RuleContext
             {
                 Item = currentItem
@@ -80,8 +82,9 @@ namespace So
 
             var accessRules = securityRuleItem.Fields[Templates.SecurityRule.Fields.AccessRules].Value;
             var database = ServiceLocator.ServiceProvider.GetRequiredService<BaseFactory>().GetDatabase("master", true);
+            
             var rules = RuleFactory.ParseRules<RuleContext>(database, accessRules);
-            if (!rules.Rules.Any() || rules.Rules.All(rule => !rule.Evaluate(ruleContext)))
+            if (rules == null || !rules.Rules.Any() || rules.Rules.All(rule => !rule.Evaluate(ruleContext)))
             {
                 entry = new SecurityRuleEntry();
                 _cachedSecurityRuleEntries.TryAdd(cacheKey, entry);
@@ -104,7 +107,9 @@ namespace So
 
         public static AccessRuleCollection GetSecurityRules(Item currentItem)
         {
-            var securityRuleItems = GetSecurityRuleItems();
+            Assert.ArgumentNotNull(currentItem, nameof(currentItem));
+
+            var securityRuleItems = GetSecurityRuleItems().ToList();
 
             foreach (var securityRuleItem in securityRuleItems)
             {

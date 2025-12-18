@@ -8,9 +8,22 @@ dotnet sitecore login --cm https://so-cm.dev.local --allow-write true --auth htt
 
 ## Contributing
 
+Startup Sitecore:
+
 * Run `init.ps1`
 * Run `up.ps1`
+
+Sync content from disk:
+
+* Run `dotnet sitecore ser push`
+* Complile solution in Visual Studio
+
+Package module:
+
 * Run `package.ps1`
+
+Give up/take a break:
+
 * Run `down.ps1`
 
 **Note:** If for some reason docker doesn't end cleanly, such as through a reboot, you may need to run this:

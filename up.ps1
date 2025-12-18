@@ -4,25 +4,11 @@
 
     .PARAMETER SkipBuild
         Specifies that the images should not be built prior to starting up.
-
-    .PARAMETER IncludeSps
-        Species that the Sitecore Publishing Service should be included.
-
-    .PARAMETER IncludeSpe
-        Specifies that the Sitecore PowerShell Extensions module should be included.
-
-    .PARAMETER IncludeSxa
-        Specifies that the Sitecore Exerience Accelerator modules should be included.
-
-    .PARAMETER IncludePackages
-        Specifies that custom packages should be included during the build and/or after startup.
-
-        Packages contained within .\docker\build\releases will be included in the built images.
-        Packages contained within .\docker\releases will be deployed after the containers startup.
 #>
 
 [CmdletBinding()]
 param(
+    [switch]$SkipBuild,
     [switch]$SkipIndexing
 )
 
@@ -37,6 +23,14 @@ $composeArgs = @("compose", "-f", ".\docker-compose.yml")
 if(Test-Path -Path (Join-Path -Path $PSScriptRoot -ChildPath "docker-compose.override.yml")) {
     $composeArgs += "-f"
     $composeArgs += ".\docker-compose.override.yml"
+}
+
+if(-not $SkipBuild) {
+    Write-Host "Build Sitecore images..." -ForegroundColor Green
+    docker $composeArgs build
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Container build failed, see errors above."
+    }
 }
 
 Write-Host "Starting Sitecore environment..." -ForegroundColor Green
