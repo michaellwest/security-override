@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Sitecore;
 using Sitecore.Abstractions;
 using Sitecore.Data;
@@ -8,8 +8,8 @@ using Sitecore.Diagnostics;
 using Sitecore.Rules;
 using Sitecore.Security.AccessControl;
 using Sitecore.SecurityModel;
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace So
@@ -19,44 +19,35 @@ namespace So
         private static readonly ConcurrentDictionary<string, SecurityRuleEntry> _cachedSecurityRuleEntries =
             new ConcurrentDictionary<string, SecurityRuleEntry>();
 
-        private static readonly List<Item> _securityRuleItems = new List<Item>();
-
-        private static bool _isInitialized = false;
+        private static volatile Lazy<Item[]> _securityRuleItems = new Lazy<Item[]>(LoadSecurityRuleItems);
 
         public static void Invalidate()
         {
             _cachedSecurityRuleEntries.Clear();
-            _securityRuleItems.Clear();
-            _isInitialized = false;
+            _securityRuleItems = new Lazy<Item[]>(LoadSecurityRuleItems);
         }
 
-        private static IEnumerable<Item> GetSecurityRuleItems()
+        private static Item[] LoadSecurityRuleItems()
         {
-            if (_isInitialized)
-            {
-                return _securityRuleItems;
-            }
-
             using (new SecurityDisabler())
             {
                 var database = ServiceLocator.ServiceProvider.GetRequiredService<BaseFactory>().GetDatabase("master", true);
                 var securityRuleItems = database.GetItem(Constants.SecurityRulesRoot)?
                     .Axes.GetDescendants()
-                    .Where(d => d.TemplateID == Templates.SecurityRule.Id);
+                    .Where(d => d.TemplateID == Templates.SecurityRule.Id)
+                    .ToArray();
 
                 if (securityRuleItems == null)
                 {
                     Log.Warn($"A required item for {nameof(SecurityRuleManager)} is missing. ItemId: {Constants.SecurityRulesRoot}", typeof(SecurityRuleManager));
-                    return _securityRuleItems;
+                    return Array.Empty<Item>();
                 }
-                _securityRuleItems.AddRange(securityRuleItems);
-            }
 
-            _isInitialized = true;
-            return _securityRuleItems;
+                return securityRuleItems;
+            }
         }
 
-        private static SecurityRuleEntry GetSecurityRuleCachedEntry(Item currentItem, Item securityRuleItem)
+        private static SecurityRuleEntry GetSecurityRuleCachedEntry(Item currentItem, Item securityRuleItem, Database database)
         {
             var cacheKey = $"{currentItem.ID}-{securityRuleItem.ID}";
 
@@ -73,7 +64,7 @@ namespace So
                 return entry;
             }
 
-            Log.Info($"Evaluating SecurityRule {securityRuleItem.ID} for item {currentItem.ID}", nameof(SecurityRuleManager));
+            Log.Debug($"Evaluating SecurityRule {securityRuleItem.ID} for item {currentItem.ID}", nameof(SecurityRuleManager));
 
             var ruleContext = new RuleContext
             {
@@ -81,8 +72,7 @@ namespace So
             };
 
             var accessRules = securityRuleItem.Fields[Templates.SecurityRule.Fields.AccessRules].Value;
-            var database = ServiceLocator.ServiceProvider.GetRequiredService<BaseFactory>().GetDatabase("master", true);
-            
+
             var rules = RuleFactory.ParseRules<RuleContext>(database, accessRules);
             if (rules == null || !rules.Rules.Any() || rules.Rules.All(rule => !rule.Evaluate(ruleContext)))
             {
@@ -109,11 +99,12 @@ namespace So
         {
             Assert.ArgumentNotNull(currentItem, nameof(currentItem));
 
-            var securityRuleItems = GetSecurityRuleItems().ToList();
+            var securityRuleItems = _securityRuleItems.Value;
+            var database = ServiceLocator.ServiceProvider.GetRequiredService<BaseFactory>().GetDatabase("master", true);
 
             foreach (var securityRuleItem in securityRuleItems)
             {
-                var entry = GetSecurityRuleCachedEntry(currentItem, securityRuleItem);
+                var entry = GetSecurityRuleCachedEntry(currentItem, securityRuleItem, database);
                 if (entry != null && entry.IsOverridden)
                 {
                     return entry.AccessRightsOverride;

@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Sitecore.Abstractions;
 using Sitecore.Data.Events;
 using Sitecore.Data.Items;
@@ -21,18 +21,29 @@ namespace So
                     item.Paths.LongID.IndexOf(Constants.SecurityRulesRoot.ToString(), StringComparison.OrdinalIgnoreCase) > 0;
         }
 
+        private void InvalidateCaches()
+        {
+            var cacheManager = ServiceLocator.ServiceProvider.GetRequiredService<BaseCacheManager>();
+            cacheManager.GetAccessResultCache().Clear();
+            SecurityRuleManager.Invalidate();
+        }
+
         internal void OnItemSaved(object sender, EventArgs args)
         {
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var item = Event.ExtractParameter<Item>(args, 0);
-            if (IsMonitoredItem(item))
+            try
             {
-                var cacheManager = ServiceLocator.ServiceProvider.GetRequiredService<BaseCacheManager>();
-                cacheManager.GetAccessResultCache().Clear();
-
-                SecurityRuleManager.Invalidate();
+                var item = Event.ExtractParameter<Item>(args, 0);
+                if (IsMonitoredItem(item))
+                {
+                    InvalidateCaches();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnItemSaved)}", ex, this);
             }
         }
 
@@ -41,13 +52,17 @@ namespace So
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var item = Event.ExtractParameter<Item>(args, 0);
-            if (IsMonitoredItem(item))
+            try
             {
-                var cacheManager = ServiceLocator.ServiceProvider.GetRequiredService<BaseCacheManager>();
-                cacheManager.GetAccessResultCache().Clear();
-
-                SecurityRuleManager.Invalidate();
+                var item = Event.ExtractParameter<Item>(args, 0);
+                if (IsMonitoredItem(item))
+                {
+                    InvalidateCaches();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnItemDeleting)}", ex, this);
             }
         }
 
@@ -56,10 +71,17 @@ namespace So
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var roleName = Event.ExtractParameter<string>(args, 0);
-            if (string.IsNullOrEmpty(roleName)) return;
+            try
+            {
+                var roleName = Event.ExtractParameter<string>(args, 0);
+                if (string.IsNullOrEmpty(roleName)) return;
 
-            SecurityRuleManager.Invalidate();
+                InvalidateCaches();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnRoleCreated)}", ex, this);
+            }
         }
 
         internal void OnRoleRemoved(object sender, EventArgs args)
@@ -67,10 +89,17 @@ namespace So
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var roleName = Event.ExtractParameter<string>(args, 0);
-            if (string.IsNullOrEmpty(roleName)) return;
+            try
+            {
+                var roleName = Event.ExtractParameter<string>(args, 0);
+                if (string.IsNullOrEmpty(roleName)) return;
 
-            SecurityRuleManager.Invalidate();
+                InvalidateCaches();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnRoleRemoved)}", ex, this);
+            }
         }
 
         internal void OnRolesInRolesAltered(object sender, EventArgs args)
@@ -78,10 +107,17 @@ namespace So
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var roles = Event.ExtractParameter<IEnumerable<Role>>(args, 0);
-            if (roles == null) return;
+            try
+            {
+                var roles = Event.ExtractParameter<IEnumerable<Role>>(args, 0);
+                if (roles == null) return;
 
-            SecurityRuleManager.Invalidate();
+                InvalidateCaches();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnRolesInRolesAltered)}", ex, this);
+            }
         }
 
         internal void OnRolesInRolesRemoved(object sender, EventArgs args)
@@ -89,10 +125,17 @@ namespace So
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var roleName = Event.ExtractParameter<string>(args, 0);
-            if (string.IsNullOrEmpty(roleName)) return;
+            try
+            {
+                var roleName = Event.ExtractParameter<string>(args, 0);
+                if (string.IsNullOrEmpty(roleName)) return;
 
-            SecurityRuleManager.Invalidate();
+                InvalidateCaches();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnRolesInRolesRemoved)}", ex, this);
+            }
         }
 
         internal void OnUserCreated(object sender, EventArgs args)
@@ -100,10 +143,17 @@ namespace So
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var user = Event.ExtractParameter<MembershipUser>(args, 0);
-            if (user == null || string.IsNullOrEmpty(user.UserName)) return;
+            try
+            {
+                var user = Event.ExtractParameter<MembershipUser>(args, 0);
+                if (user == null || string.IsNullOrEmpty(user.UserName)) return;
 
-            SecurityRuleManager.Invalidate();
+                InvalidateCaches();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnUserCreated)}", ex, this);
+            }
         }
 
         internal void OnUserRemoved(object sender, EventArgs args)
@@ -111,10 +161,17 @@ namespace So
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var username = Event.ExtractParameter<string>(args, 0);
-            if (string.IsNullOrEmpty(username)) return;
+            try
+            {
+                var username = Event.ExtractParameter<string>(args, 0);
+                if (string.IsNullOrEmpty(username)) return;
 
-            SecurityRuleManager.Invalidate();
+                InvalidateCaches();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnUserRemoved)}", ex, this);
+            }
         }
 
         internal void OnUserUpdated(object sender, EventArgs args)
@@ -122,10 +179,17 @@ namespace So
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var user = Event.ExtractParameter<MembershipUser>(args, 0);
-            if (user == null || string.IsNullOrEmpty(user.UserName)) return;
+            try
+            {
+                var user = Event.ExtractParameter<MembershipUser>(args, 0);
+                if (user == null || string.IsNullOrEmpty(user.UserName)) return;
 
-            SecurityRuleManager.Invalidate();
+                InvalidateCaches();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnUserUpdated)}", ex, this);
+            }
         }
 
         internal void OnRoleReferenceUpdated(object sender, EventArgs args)
@@ -133,12 +197,20 @@ namespace So
             if (EventDisabler.IsActive) return;
 
             Assert.ArgumentNotNull(args, "args");
-            var data = Event.ExtractParameter<object>(args, 0);
-            if (data == null) return;
-            var username = ((string[])data)[0];
-            if (string.IsNullOrEmpty(username)) return;
+            try
+            {
+                var data = Event.ExtractParameter<object>(args, 0);
+                var stringArray = data as string[];
+                if (stringArray == null || stringArray.Length == 0) return;
+                var username = stringArray[0];
+                if (string.IsNullOrEmpty(username)) return;
 
-            SecurityRuleManager.Invalidate();
+                InvalidateCaches();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in {nameof(OnRoleReferenceUpdated)}", ex, this);
+            }
         }
     }
 }
